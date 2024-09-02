@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaze Tracker Canvas</title>
+    <script src="https://unpkg.com/konva@9.3.11/konva.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="toolbar" role="toolbar" aria-label="Image editing tools">
+        <div class="toolbar-group">
+            <button class="toolbar-button" onclick="document.getElementById('file-input').click();" aria-label="Upload file">📁</button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-group">
+            <button class="toolbar-button" id="addText" aria-label="Add text">T</button>
+            <button class="toolbar-button" id="increaseSize" aria-label="Increase size">+</button>
+            <button class="toolbar-button" id="decreaseSize" aria-label="Decrease size">-</button>
+            <button class="toolbar-button" id="deleteItem" aria-label="Delete item">X</button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-group">
+            <button class="toolbar-button" id="shakeButton" aria-label="Shake item">↔</button>
+            <button class="toolbar-button" id="circleButton" aria-label="Circular motion">↻</button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-group">
+            <button class="color-swatch" style="background-color: #fffcf7;" title="Light Buff" onclick="changeBackgroundColor('#faf7e2')" aria-label="Change background to Light Buff"></button>
+            <button class="color-swatch" style="background-color: #b8b6a8;" title="Buff" onclick="changeBackgroundColor('#b8b6a8')" aria-label="Change background to Buff"></button>
+            <button class="color-swatch" style="background-color: #37342e;" title="Dark Buff" onclick="changeBackgroundColor('#37342e')" aria-label="Change background to Dark Buff"></button>
+            <button class="color-swatch" style="background-color: #1b1a18;" title="Dark" onclick="changeBackgroundColor('#1b1a18')" aria-label="Change background to Dark"></button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-group">
+            <button class="toolbar-button" id="animationSettings" aria-label="Animation Settings">⚙️</button>
+        </div>
+    </div>
+    <main id="container" role="main"></main>
+
+    <input type="file" id="file-input" class="hidden" accept="image/jpeg, image/png, video/mp4, video/webm" multiple onchange="handleFiles(this.files)">
+
+    <div id="textPopup" role="dialog" aria-labelledby="textPopupTitle">
+        <div id="textPopupTitleBar">
+            <h3 id="textPopupTitle">Add Text</h3>
+        </div>
+        <div id="textPopupContent">
+            <div id="textPreview" draggable="true">Preview Text</div>
+            
+            <label for="popupTextInput">Text:</label>
+            <input type="text" id="popupTextInput" placeholder="Enter text" />
+            
+            <label for="colorPicker">Color:</label>
+            <input type="color" id="colorPicker" value="#ffffff" />
+            
+            <label for="fontPicker">Font:</label>
+            <select id="fontPicker">
+                <option value="Arial">Arial</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Verdana">Verdana</option>
+            </select>
+            
+            <label for="fontSizeSlider">Font Size: <span id="fontSizeValue">24</span>px</label>
+            <input type="range" id="fontSizeSlider" min="12" max="72" value="24" />
+            
+            <button id="addTextButton">Add</button>
+            <button id="cancelTextButton">Close</button>  
+        </div>
+    </div>
+
+    <div id="assetsPanel" class="assets-panel collapsed">
+        <button id="assetsPanelToggle" class="assets-panel-toggle" aria-label="Toggle assets panel">◀</button>
+        <div class="assets-panel-content">
+            <h3 id="assetsPanelTitle">Assets</h3>
+            <div id="assetsList"></div>
+        </div>
+    </div>
+
+    <div id="animationSettingsMenu" style="display: none;">
+        <h3>Animation Settings</h3>
+        <div>
+            <h4>Shake Animation</h4>
+            <label for="shakeSpeed">Speed: <span id="shakeSpeedValue">0.7</span>x</label>
+            <input type="range" id="shakeSpeed" min="0.1" max="1.3" step="0.1" value="0.7">
+            
+            <label for="shakeRepetitions">Repetitions:</label>
+            <input type="number" id="shakeRepetitions" min="1" max="10" value="5">
+            
+            <label for="shakeDistance">Distance: <span id="shakeDistanceValue">100</span>px</label>
+            <input type="range" id="shakeDistance" min="10" max="200" step="10" value="100">
+        </div>
+        <div>
+            <h4>Circle Animation</h4>
+            <label for="circleSpeed">Speed: <span id="circleSpeedValue">1</span>x</label>
+            <input type="range" id="circleSpeed" min="0.1" max="2" step="0.1" value="1">
+            
+            <label for="circleRepetitions">Repetitions:</label>
+            <input type="number" id="circleRepetitions" min="1" max="10" value="5">
+            
+            <label for="circleRadius">Radius: <span id="circleRadiusValue">100</span>px</label>
+            <input type="range" id="circleRadius" min="10" max="200" step="10" value="100">
+        </div>
+        <button id="saveAnimationSettings">Save Settings</button>
+        <button id="closeAnimationSettings">Close</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
