@@ -67,8 +67,14 @@ function handleFiles(files) {
             reader.onload = function (e) {
                 var img = new Image();
                 img.onload = function () {
-                    addToAssetsPanel(img);
-                    drawImage(img, stage.width() / 2, stage.height() / 2); // Center of stage
+                    // Generate a unique identifier for this image instance
+                    var uniqueId = 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    
+                    // Always add to the assets panel
+                    addToAssetsPanel(img, uniqueId);
+                    
+                    // Always add a new instance to the canvas
+                    drawImage(img, stage.width() / 2, stage.height() / 2);
                 };
                 img.src = e.target.result;
             };
@@ -77,11 +83,12 @@ function handleFiles(files) {
     });
 }
 
-function addToAssetsPanel(img) {
+function addToAssetsPanel(img, uniqueId) {
     var assetContainer = document.createElement('div');
     assetContainer.classList.add('asset-container');
     assetContainer.classList.add(document.body.style.backgroundColor === '#1b1a18' ? 'dark-mode' : 'light-mode');
     assetContainer.style.backgroundColor = document.body.style.backgroundColor;
+    assetContainer.dataset.uniqueId = uniqueId;
 
     var thumbnail = new Image();
     thumbnail.src = img.src;
@@ -92,7 +99,7 @@ function addToAssetsPanel(img) {
     deleteBtn.classList.add('asset-delete-btn');
     deleteBtn.innerHTML = 'X';
     deleteBtn.onclick = function(e) {
-        e.stopPropagation(); // Prevent triggering drag start
+        e.stopPropagation();
         assetContainer.remove();
     };
 
@@ -100,10 +107,11 @@ function addToAssetsPanel(img) {
         e.dataTransfer.setData('application/json', JSON.stringify({
             src: img.src,
             width: img.width,
-            height: img.height
+            height: img.height,
+            uniqueId: uniqueId
         }));
         // Create a scaled-down version of the image for the drag preview
-        var maxSize = 200; // Should match the maxSize in drawImage
+        var maxSize = 200;
         var scale = Math.min(maxSize / img.width, maxSize / img.height);
         var dragIcon = document.createElement('canvas');
         dragIcon.width = img.width * scale;
@@ -118,23 +126,21 @@ function addToAssetsPanel(img) {
     document.getElementById('assetsList').appendChild(assetContainer);
 }
 
-function drawImage(imageObj, x, y) {
-    var imgWidth = imageObj.width;
-    var imgHeight = imageObj.height;
+function drawImage(img, x, y) {
     var maxSize = 200; // Maximum width or height for the image
-    var scale = Math.min(maxSize / imgWidth, maxSize / imgHeight);
+    var scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
 
-    var image = new Konva.Image({
-        image: imageObj,
-        x: x - (imgWidth * scale / 2), // Center the image on the cursor
-        y: y - (imgHeight * scale / 2),
-        width: imgWidth * scale,
-        height: imgHeight * scale,
+    var imageObj = new Konva.Image({
+        image: img,
+        x: x - (img.width * scale / 2),
+        y: y - (img.height * scale / 2),
+        width: img.width * scale,
+        height: img.height * scale,
         draggable: true,
         name: 'selectable'
     });
 
-    layer.add(image);
+    layer.add(imageObj);
     layer.draw();
 }
 
@@ -466,8 +472,8 @@ document.getElementById('assetsPanelToggle').addEventListener('click', function(
 
 function resizeStage() {
     var assetsPanel = document.getElementById('assetsPanel');
-    var panelWidth = assetsPanel.classList.contains('expanded') ? 150 : 0;
-    stage.width(window.innerWidth - 40 - panelWidth); // Changed from 50 to 40
+    var panelWidth = assetsPanel.classList.contains('expanded') ? 170 : 0;
+    stage.width(window.innerWidth - 40 - panelWidth);
     stage.height(window.innerHeight);
     stage.draw();
 }
