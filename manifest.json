@@ -1,0 +1,35 @@
+{
+  "name": "Gaze Tracker Canvas",
+  "short_name": "GazeCanvas",
+  "description": "Interactive canvas for eye tracking and media manipulation",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#3a3836",
+  "orientation": "any",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "gazecanvas.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "gazecanvas.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["productivity", "multimedia"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Open Canvas",
+      "short_name": "Canvas",
+      "description": "Open the main canvas interface",
+      "url": "./index.html"
+    }
+  ]
+}
